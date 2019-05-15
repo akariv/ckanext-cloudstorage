@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import cgi
+from werkzeug.datastructures import FileStorage
 import mimetypes
 import os.path
 import urlparse
@@ -165,6 +166,11 @@ class ResourceCloudStorage(CloudStorage):
         if isinstance(upload_field_storage, cgi.FieldStorage):
             self.filename = munge.munge_filename(upload_field_storage.filename)
             self.file_upload = upload_field_storage.file
+            resource['url'] = self.filename
+            resource['url_type'] = 'upload'
+        elif isinstance(upload_field_storage, FileStorage):
+            self.filename = munge.munge_filename(upload_field_storage.filename)
+            self.file_upload = upload_field_storage.stream
             resource['url'] = self.filename
             resource['url_type'] = 'upload'
         elif multipart_name and self.can_use_advanced_aws:
